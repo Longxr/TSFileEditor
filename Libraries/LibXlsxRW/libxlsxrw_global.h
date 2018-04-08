@@ -1,0 +1,12 @@
+#ifndef LIBXLSXRW_GLOBAL_H
+#define LIBXLSXRW_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(LIBXLSXRW_LIBRARY)
+#  define LIBXLSXRWSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define LIBXLSXRWSHARED_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // LIBXLSXRW_GLOBAL_H
