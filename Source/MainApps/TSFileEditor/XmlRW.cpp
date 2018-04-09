@@ -39,13 +39,14 @@ bool XmlRW::ImportFromTS(QList<TranslateModel>& list, QString strPath)
                 QXmlStreamAttributes attributes = xml.attributes();
                 if (attributes.hasAttribute("version")) {
                     QString strVersion = attributes.value("version").toString();
-                    if (strVersion == "2.1") {
-                        qDebug() << "version : " << strVersion;
-                        ReadXBEL();
-                    } else {
-                        xml.raiseError("The file is not an TS version 2.1 file.");
-                    }
+                    qDebug() << "version : " << strVersion;
                 }
+                else if (attributes.hasAttribute("language")) {
+                    QString strLanguage = attributes.value("language").toString();
+                    qDebug() << "language : " << strLanguage;
+                }
+
+                ReadXBEL();
             }
             else {
                 xml.raiseError("XML file format error.");
