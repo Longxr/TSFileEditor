@@ -12,9 +12,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
-    ui->tsPathEdit->setText("Z:/QtWorkspace/TSFileEditor/testFile/classroomcloud_zh.ts");
-    ui->excelPathEdit->setText("Z:/QtWorkspace/TSFileEditor/testFile/untitled.xlsx");
 }
 
 MainWindow::~MainWindow()
