@@ -41,7 +41,7 @@ bool XmlRW::ImportFromTS(QList<TranslateModel>& list, QString strPath)
                     QString strVersion = attributes.value("version").toString();
                     qDebug() << "version : " << strVersion;
                 }
-                else if (attributes.hasAttribute("language")) {
+                if (attributes.hasAttribute("language")) {
                     QString strLanguage = attributes.value("language").toString();
                     qDebug() << "language : " << strLanguage;
                 }
@@ -99,12 +99,12 @@ bool XmlRW::ExportToTS(QList<TranslateModel>& list, QString strPath)
         QDomNode node;
         for(int i=0; i < list.count(); i++) {
             node = list.at(i);
-            QDomNodeList childList = list.at(i).childNodes();
-            QString strKey = childList.at(1).toElement().text();
+            QDomNodeList childList = node.childNodes();
+            QString strKey = childList.at(childList.count()-2).toElement().text();
             QString strTranslation = node.lastChild().toElement().text();
             QString strValue = m_translateMap.value(strKey);
 
-//            qDebug() << i << "key:" << strKey << "value:" << strValue;
+            qDebug() << i << "\ttranslatation:" << strTranslation << "\t\tkey:" << strKey << "\t\tvalue:" << strValue;
 
             if(!strValue.isEmpty() && strTranslation != strValue) {
                 QDomNode oldNode = node.lastChild();
