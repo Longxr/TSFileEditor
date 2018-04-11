@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui xml
+QT       += network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -24,12 +25,14 @@ SOURCES += main.cpp\
         MainWindow.cpp \
     XmlRW.cpp \
     ExcelRW.cpp \
-    DataModel/TranslateModel.cpp
+    DataModel/TranslateModel.cpp \
+    NetWorker.cpp
 
 HEADERS  += MainWindow.h \
     XmlRW.h \
     ExcelRW.h \
-    DataModel/TranslateModel.h
+    DataModel/TranslateModel.h \
+    NetWorker.h
 
 FORMS    += MainWindow.ui
 

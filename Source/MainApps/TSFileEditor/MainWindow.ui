@@ -82,7 +82,7 @@
    <widget class="QPushButton" name="tsUpdateBtn">
     <property name="geometry">
      <rect>
-      <x>290</x>
+      <x>280</x>
       <y>220</y>
       <width>75</width>
       <height>23</height>
@@ -90,6 +90,19 @@
     </property>
     <property name="text">
      <string>译文写入</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="translateBtn">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>220</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>翻译</string>
     </property>
    </widget>
   </widget>

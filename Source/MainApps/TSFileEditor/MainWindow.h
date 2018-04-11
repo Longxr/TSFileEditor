@@ -27,6 +27,8 @@ private slots:
 
     void on_tsUpdateBtn_clicked();
 
+    void on_translateBtn_clicked();
+
 private:
     Ui::MainWindow *ui;
 
