@@ -13,7 +13,6 @@ public:
     ~TranslateWorker();
 
     void YoudaoTranslate(const QString &source, const QString &from = QString("zh-CHS"), const QString &to = QString("en"));
-    QByteArray GetYoudaoSign(const QString &source, int salt);
 
 signals:
     void STranslateResult(const QString &str);
@@ -21,8 +20,7 @@ signals:
 public slots:
 
 private:
-//    QString GetYoudaoSign(const QString &source, int salt);
-    QString Utf8Encode(const QByteArray &array);
+    QByteArray GetYoudaoSign(const QString &source, int salt);
 
     NetWorker*  m_pNetWorker;
 };

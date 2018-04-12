@@ -19,7 +19,6 @@ TranslateWorker::~TranslateWorker()
 void TranslateWorker::YoudaoTranslate(const QString &source, const QString &from, const QString &to)
 {
     QString baseUrl = QString("http://openapi.youdao.com/api");
-    QByteArray sourceUtf8 = Utf8Encode(source.toUtf8()).toLatin1();
 
     int salt = 2;
 
@@ -45,25 +44,28 @@ void TranslateWorker::YoudaoTranslate(const QString &source, const QString &from
         }
         else
         {
-            QVariant variant = pReply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-            int nStatusCode = variant.toInt();
-            qDebug() << "Status Code :" << nStatusCode;
+//            QVariant variant = pReply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+//            int nStatusCode = variant.toInt();
+//            qDebug() << "Status Code :" << nStatusCode;
 
             QByteArray replyData = pReply->readAll();
 
-            qDebug() << replyData;
+//            qDebug() << replyData;
 
             QJsonParseError error;
-            QJsonDocument jsonDocument = QJsonDocument::fromJson(pReply->readAll(), &error);
+            QJsonDocument jsonDocument = QJsonDocument::fromJson(replyData, &error);
             if (error.error == QJsonParseError::NoError) {
                 if (!(jsonDocument.isNull() || jsonDocument.isEmpty()) && jsonDocument.isObject()) {
                     QVariantMap data = jsonDocument.toVariant().toMap();
 //                    qDebug() << data;
                     int errorcode = data[QLatin1String("errorCode")].toInt();
 
-                    if(0 != errorcode){
-                        QString translation = data[QLatin1String("translation")].toString();
-                        emit STranslateResult(translation);
+                    if(0 == errorcode){
+                        QVariantList detailList = data[QLatin1String("translation")].toList();
+                        QString str = detailList.first().toString();
+                        qDebug() << "source: " << source << "\ttranslation: " << str;
+
+                        emit STranslateResult(str);
                     }
 
                 }
@@ -91,35 +93,4 @@ QByteArray TranslateWorker::GetYoudaoSign(const QString &source, int salt)
 //    qDebug() << sign;
 
     return sign;
-}
-
-QString TranslateWorker::Utf8Encode(const QByteArray &array)
-{
-    QString result;
-    result.reserve(array.length() + array.length() / 3);
-    for (int i = 0; i < array.length(); ++i) {
-        char c = array.at(i);
-        // if char is non-ascii, escape it
-        if (c < 0x20 || uchar(c) >= 0x7f) {
-//            result += "\\x" + QString::number(uchar(c), 16).toUpper();
-            result += "%" + QString::number(uchar(c), 16).toUpper();
-        }
-        else {
-            // if previous char was escaped, we need to make sure the next char is not
-            // interpreted as part of the hex value, e.g. "äc.com" -> "\xabc.com"; this
-            // should be "\xab""c.com"
-            QRegExp hexEscape("\\\\x[a-fA-F0-9][a-fA-F0-9]$");
-            bool isHexChar = ((c >= '0' && c <= '9') ||
-                             (c >= 'a' && c <= 'f') ||
-                             (c >= 'A' && c <= 'F'));
-            if (result.contains(hexEscape) && isHexChar)
-                result += "\"\"";
-            result += c;
-        }
-    }
-
-//    result.replace("\"", ""); //delete "
-//    qDebug() << "result: " << result;
-
-    return result;
 }
