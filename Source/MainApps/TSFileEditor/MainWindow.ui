@@ -70,7 +70,7 @@
     <property name="geometry">
      <rect>
       <x>70</x>
-      <y>220</y>
+      <y>200</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -82,8 +82,8 @@
    <widget class="QPushButton" name="tsUpdateBtn">
     <property name="geometry">
      <rect>
-      <x>280</x>
-      <y>220</y>
+      <x>240</x>
+      <y>200</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -95,14 +95,37 @@
    <widget class="QPushButton" name="translateBtn">
     <property name="geometry">
      <rect>
-      <x>170</x>
-      <y>220</y>
+      <x>240</x>
+      <y>250</y>
       <width>75</width>
       <height>23</height>
      </rect>
     </property>
     <property name="text">
-     <string>翻译</string>
+     <string>有道翻译</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comboBox">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>250</y>
+      <width>81</width>
+      <height>22</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>250</y>
+      <width>61</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>目标语言：</string>
     </property>
    </widget>
   </widget>

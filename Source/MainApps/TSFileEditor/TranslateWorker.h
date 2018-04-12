@@ -9,10 +9,11 @@ class TranslateWorker : public QObject
 {
     Q_OBJECT
 public:
+
     explicit TranslateWorker(QObject *parent = 0);
     ~TranslateWorker();
 
-    void YoudaoTranslate(const QString &source, const QString &from = QString("zh-CHS"), const QString &to = QString("en"));
+    void YoudaoTranslate(const QString &source, const QString &from = QString("auto"), const QString &to = QString("en"));
 
 signals:
     void STranslateResult(const QString &str);

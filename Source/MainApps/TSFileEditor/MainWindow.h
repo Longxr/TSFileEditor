@@ -10,6 +10,10 @@ namespace Ui {
 class MainWindow;
 }
 
+class XmlRW;
+class ExcelRW;
+class TranslateWorker;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -29,10 +33,18 @@ private slots:
 
     void on_translateBtn_clicked();
 
-private:
-    Ui::MainWindow *ui;
+    void SlotComboBoxChanged(int);
 
-    QList<TranslateModel> m_transList;
+private:
+    Ui::MainWindow*         ui;
+
+    QList<TranslateModel>   m_transList;
+
+    QString                 m_toLanguage;
+
+    XmlRW*                  m_pXmlWorker;
+    ExcelRW*                m_pExcelWorker;
+    TranslateWorker*        m_pTranslateWorker;
 };
 
 #endif // MAINWINDOW_H

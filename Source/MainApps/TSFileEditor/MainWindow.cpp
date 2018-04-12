@@ -7,12 +7,30 @@
 #include <QStandardPaths>
 #include <QFileDialog>
 #include <QDebug>
+#include <QListView>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    m_toLanguage = "en";
+    m_pXmlWorker = new XmlRW(this);
+    m_pExcelWorker = new ExcelRW(this);
+    m_pTranslateWorker = new TranslateWorker(this);
+
+    ui->comboBox->setView(new QListView());
+    ui->comboBox->addItem("英文", "en");
+    ui->comboBox->addItem("中文", "zh-CHS");
+    ui->comboBox->addItem("日文", "ja");
+    ui->comboBox->addItem("韩文", "ko");
+    ui->comboBox->addItem("法文", "fr");
+    ui->comboBox->addItem("俄文", "ru");
+    ui->comboBox->addItem("葡萄牙文", "pt");
+    ui->comboBox->addItem("西班牙文", "es");
+
+    connect(ui->comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(SlotComboBoxChanged(int)));
 }
 
 MainWindow::~MainWindow()
@@ -67,8 +85,8 @@ void MainWindow::on_generateBtn_clicked()
         on_tsLookBtn_clicked();
     }
 
-    XmlRW *newXmlRw = new XmlRW(this);
-    re = newXmlRw->ImportFromTS(m_transList, ui->tsPathEdit->text());
+
+    re = m_pXmlWorker->ImportFromTS(m_transList, ui->tsPathEdit->text());
 
     if(re) {
         qDebug() << tr("import .ts file success");
@@ -92,8 +110,7 @@ void MainWindow::on_generateBtn_clicked()
         }
     }
 
-    ExcelRW *newExcel = new ExcelRW(this);
-    re = newExcel->ExportToXlsx(m_transList, ui->excelPathEdit->text());
+    re = m_pExcelWorker->ExportToXlsx(m_transList, ui->excelPathEdit->text());
     if(re) {
         qDebug() << tr("export excel file success");
     }
@@ -111,8 +128,7 @@ void MainWindow::on_tsUpdateBtn_clicked()
         on_excelLookBtn_clicked();
     }
 
-    ExcelRW *newExcel = new ExcelRW(this);
-    re = newExcel->ImportFromXlsx(m_transList, ui->excelPathEdit->text());
+    re = m_pExcelWorker->ImportFromXlsx(m_transList, ui->excelPathEdit->text());
     if(re) {
         qDebug() << tr("import excel file success");
     }
@@ -125,8 +141,7 @@ void MainWindow::on_tsUpdateBtn_clicked()
         on_tsLookBtn_clicked();
     }
 
-    XmlRW *newXmlRw = new XmlRW(this);
-    re = newXmlRw->ExportToTS(m_transList, ui->tsPathEdit->text());
+    re = m_pXmlWorker->ExportToTS(m_transList, ui->tsPathEdit->text());
 
     if(re) {
         qDebug() << tr("update .ts file success");
@@ -138,9 +153,10 @@ void MainWindow::on_tsUpdateBtn_clicked()
 
 void MainWindow::on_translateBtn_clicked()
 {
-    qDebug() << "translate";
+    m_pTranslateWorker->YoudaoTranslate("你好", "auto", m_toLanguage);
+}
 
-    TranslateWorker *translate = new TranslateWorker(this);
-    translate->YoudaoTranslate("你好");
-//    translate->YoudaoTranslate("Good", "EN", "zh_CHS");
+void MainWindow::SlotComboBoxChanged(int)
+{
+    m_toLanguage = ui->comboBox->currentData().toString();
 }
