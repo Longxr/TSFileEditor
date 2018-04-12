@@ -26,13 +26,15 @@ SOURCES += main.cpp\
     XmlRW.cpp \
     ExcelRW.cpp \
     DataModel/TranslateModel.cpp \
-    NetWorker.cpp
+    NetWorker.cpp \
+    TranslateWorker.cpp
 
 HEADERS  += MainWindow.h \
     XmlRW.h \
     ExcelRW.h \
     DataModel/TranslateModel.h \
-    NetWorker.h
+    NetWorker.h \
+    TranslateWorker.h
 
 FORMS    += MainWindow.ui
 

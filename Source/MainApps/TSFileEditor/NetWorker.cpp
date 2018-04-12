@@ -38,7 +38,15 @@ void NetWorker::setDefaultConfig()
 QNetworkReply * NetWorker::get(const QString &baseUrl)
 {
     QUrl url(baseUrl);
-    return (m_manager->get(QNetworkRequest(url)));
+    QNetworkRequest request = QNetworkRequest(url);
+//    request.setRawHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+//    request.setRawHeader("Accept-Language", "zh-CN,zh;q=0.8");
+//    request.setRawHeader("Cache-Control", "no-cache");
+//    request.setRawHeader("Connection", "keep-alive");
+//    request.setRawHeader("DNT","1");
+//    request.setRawHeader("Pragma","no-cache");
+//    request.setRawHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.76 Safari/537.36");
+    return (m_manager->get(request));
 }
 
 QNetworkReply * NetWorker::get(const QString &baseUrl, const QUrlQuery &query)
@@ -55,7 +63,7 @@ QNetworkReply * NetWorker::post(const QString &url, const QByteArray &data)
     request.setUrl(QUrl(url));
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 
-//    qDebug() << "post argv: " << data;
+    qDebug() << "post argv: " << data;
     return (m_manager->post(request, data));
 }
 

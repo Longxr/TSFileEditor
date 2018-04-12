@@ -2,7 +2,7 @@
 #include "ui_MainWindow.h"
 #include "XmlRW.h"
 #include "ExcelRW.h"
-#include "NetWorker.h"
+#include "TranslateWorker.h"
 
 #include <QStandardPaths>
 #include <QFileDialog>
@@ -140,24 +140,7 @@ void MainWindow::on_translateBtn_clicked()
 {
     qDebug() << "translate";
 
-    NetWorker *InfoWorker = NetWorker::instance();
-    QNetworkReply *pReply = (InfoWorker->get(QString("http://www.baidu.com")));
-
-    connect(pReply, &QNetworkReply::finished, this, [=](){
-        if (pReply->error() != QNetworkReply::NoError) {
-            qDebug() << "Error String : " << pReply->errorString();
-
-        }
-        else
-        {
-            QVariant variant = pReply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-            int nStatusCode = variant.toInt();
-            qDebug() << "Status Code :" << nStatusCode;
-
-            QByteArray datagram = pReply->readAll();
-            qDebug() << datagram;
-        }
-
-            pReply->deleteLater();
-        });
+    TranslateWorker *translate = new TranslateWorker(this);
+    translate->YoudaoTranslate("你好");
+//    translate->YoudaoTranslate("Good", "EN", "zh_CHS");
 }
