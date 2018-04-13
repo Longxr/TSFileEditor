@@ -17,8 +17,6 @@ include(./../../Path.pri)
 
 INCLUDEPATH += ../../Libraries
 
-LIBS += -L$${DESTDIR} -lLibXlsRead
-LIBS += -L$${DESTDIR} -lLibXlsWrite
 LIBS += -L$${DESTDIR} -lLibXlsxRW
 
 SOURCES += main.cpp\
