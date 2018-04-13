@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_toLanguage = "en";
     m_pXmlWorker = new XmlRW(this);
     m_pExcelWorker = new ExcelRW(this);
-    m_pTranslateWorker = new TranslateWorker(this);
+    m_pTranslateWorker = new TranslateWorker(m_transList, this);
 
     ui->comboBox->setView(new QListView());
     ui->comboBox->addItem("英文", "en");
@@ -80,21 +80,6 @@ void MainWindow::on_generateBtn_clicked()
 {
     bool re;
 
-    //import .ts file
-    if(ui->tsPathEdit->text().isEmpty()) {
-        on_tsLookBtn_clicked();
-    }
-
-
-    re = m_pXmlWorker->ImportFromTS(m_transList, ui->tsPathEdit->text());
-
-    if(re) {
-        qDebug() << tr("import .ts file success");
-    }
-    else {
-        qDebug() << tr("import .ts file failed");
-    }
-
     //generate excel file
     if(ui->excelPathEdit->text().isEmpty()) {
         const QString documentLocation = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
@@ -149,14 +134,60 @@ void MainWindow::on_tsUpdateBtn_clicked()
     else {
         qDebug() << tr("update .ts file failed");
     }
+
 }
 
 void MainWindow::on_translateBtn_clicked()
 {
-    m_pTranslateWorker->YoudaoTranslate("你好", "auto", m_toLanguage);
+    bool re;
+
+    //import excel file
+    if(ui->excelPathEdit->text().isEmpty()) {
+        on_excelLookBtn_clicked();
+    }
+
+    re = m_pExcelWorker->ImportFromXlsx(m_transList, ui->excelPathEdit->text());
+    if(re) {
+        qDebug() << tr("import excel file success");
+    }
+    else {
+        qDebug() << tr("import excel file failed");
+    }
+
+//    m_pTranslateWorker->YoudaoTranslate("你好", "auto", m_toLanguage);
+
+    //translate excel file
+    re = m_pTranslateWorker->YoudaoTranslate("auto", m_toLanguage);
+    if(re) {
+        qDebug() << tr("translate excel file success");
+    }
+    else {
+        qDebug() << tr("translate excel file failed");
+    }
 }
 
 void MainWindow::SlotComboBoxChanged(int)
 {
     m_toLanguage = ui->comboBox->currentData().toString();
+}
+
+
+
+void MainWindow::on_tsImportBtn_clicked()
+{
+    bool re;
+
+    //import .ts file
+    if(ui->tsPathEdit->text().isEmpty()) {
+        on_tsLookBtn_clicked();
+    }
+
+    re = m_pXmlWorker->ImportFromTS(m_transList, ui->tsPathEdit->text());
+
+    if(re) {
+        qDebug() << tr("import .ts file success");
+    }
+    else {
+        qDebug() << tr("import .ts file failed");
+    }
 }

@@ -35,10 +35,12 @@ private slots:
 
     void SlotComboBoxChanged(int);
 
+    void on_tsImportBtn_clicked();
+
 private:
     Ui::MainWindow*         ui;
 
-    QList<TranslateModel>   m_transList;
+    QList<TranslateModel>  m_transList;
 
     QString                 m_toLanguage;
 

@@ -6,9 +6,12 @@
 #define APP_KEY     "149a78d6b76617a0"
 #define APP_SECRET  "z47ziTdEURm59sxii1L3RKhp3Myy1qfW"
 
-TranslateWorker::TranslateWorker(QObject *parent) : QObject(parent)
+TranslateWorker::TranslateWorker(QList<TranslateModel> &list, QObject *parent) : QObject(parent),
+    m_list(list)
 {
     m_pNetWorker = NetWorker::instance();
+
+    connect(this, &TranslateWorker::STranslateResult, this, SlotTranslateResult);
 }
 
 TranslateWorker::~TranslateWorker()
@@ -16,7 +19,24 @@ TranslateWorker::~TranslateWorker()
 
 }
 
-void TranslateWorker::YoudaoTranslate(const QString &source, const QString &from, const QString &to)
+bool TranslateWorker::YoudaoTranslate(const QString &from, const QString &to)
+{
+    if(m_list.count() <=0) {
+        qDebug() << "translate list is empty";
+        return false;
+    }
+
+    m_fromLang = from;
+    m_toLang = to;
+
+    for(int i=0; i<m_list.count(); i++) {
+        YoudaoTranslate(i, m_list.at(i).GetSource());
+    }
+
+    return true;
+}
+
+void TranslateWorker::YoudaoTranslate(int index, const QString &source)
 {
     QString baseUrl = QString("http://openapi.youdao.com/api");
 
@@ -26,9 +46,9 @@ void TranslateWorker::YoudaoTranslate(const QString &source, const QString &from
     dataArray.append("q=");
     dataArray.append(source.toUtf8().toPercentEncoding());
     dataArray.append("&from=");
-    dataArray.append(from);
+    dataArray.append(m_fromLang);
     dataArray.append("&to=");
-    dataArray.append(to);
+    dataArray.append(m_toLang);
     dataArray.append("&appKey=");
     dataArray.append(APP_KEY);
     dataArray.append("&salt=");
@@ -63,9 +83,8 @@ void TranslateWorker::YoudaoTranslate(const QString &source, const QString &from
                     if(0 == errorcode){
                         QVariantList detailList = data[QLatin1String("translation")].toList();
                         QString str = detailList.first().toString();
-                        qDebug() << "source: " << source << "\ttranslation: " << str;
 
-                        emit STranslateResult(str);
+                        emit STranslateResult(index, str);
                     }
 
                 }
@@ -93,4 +112,13 @@ QByteArray TranslateWorker::GetYoudaoSign(const QString &source, int salt)
 //    qDebug() << sign;
 
     return sign;
+}
+
+void TranslateWorker::SlotTranslateResult(int index, const QString &str)
+{
+    TranslateModel model = m_list.at(index);
+    model.SetTranslate(str);
+    m_list.replace(index, model);
+
+    qDebug() << "key: " << m_list.at(index).GetKey() << "\tsource: " << m_list.at(index).GetSource() << "\ttranslation: " << m_list.at(index).GetTranslate();
 }
