@@ -1,11 +1,7 @@
 #include "ExcelRW.h"
 #include <QRegExpValidator>
 #include <QFileInfo>
-#include "LibXlsWrite/xlslib.h"
 #include <QDebug>
-
-using namespace xlslib_core;
-using namespace xls;
 
 ExcelRW::ExcelRW(QObject *parent) : QObject(parent)
 {
@@ -15,7 +11,8 @@ ExcelRW::ExcelRW(QObject *parent) : QObject(parent)
 bool ExcelRW::ImportFromXlsx(QList<TranslateModel> &list, QString strPath)
 {
     bool bSuccess = true;
-    int nErrLine = 1;
+//    int nErrLine = 1;
+    list.clear();
 
     QString strKey, strSource, strTranslate;
     QXlsx::CellRange cellRange;

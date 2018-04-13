@@ -2,7 +2,6 @@
 #define EXCELRW_H
 
 #include <QObject>
-#include <LibXlsRead/libxls/xls.h>
 #include <LibXlsxRW/LibXlsxRW.h>
 #include "DataModel/TranslateModel.h"
 
