@@ -1,10 +1,8 @@
 #include "TranslateWorker.h"
+#include "AppConfig.h"
 
 #include <NetWorker.h>
 #include <QCryptographicHash>
-
-#define APP_KEY     "149a78d6b76617a0"
-#define APP_SECRET  "Fvzk5zpwedizqX97So4yZoe3wrQBTpAN"
 
 TranslateWorker::TranslateWorker(QList<TranslateModel> &list, QObject *parent) : QObject(parent),
     m_list(list)
