@@ -55,7 +55,7 @@ bool XmlRW::ImportFromTS(QList<TranslateModel>& list, QString strPath)
 
         file.close();
 
-//        list.clear();
+        list.clear();
         QMap<QString, QString>::iterator mapIter = m_translateMap.begin();
         for(mapIter; mapIter != m_translateMap.end(); ++mapIter)
         {
