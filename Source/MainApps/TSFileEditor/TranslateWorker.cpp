@@ -4,7 +4,7 @@
 #include <QCryptographicHash>
 
 #define APP_KEY     "149a78d6b76617a0"
-#define APP_SECRET  "z47ziTdEURm59sxii1L3RKhp3Myy1qfW"
+#define APP_SECRET  "Fvzk5zpwedizqX97So4yZoe3wrQBTpAN"
 
 TranslateWorker::TranslateWorker(QList<TranslateModel> &list, QObject *parent) : QObject(parent),
     m_list(list)

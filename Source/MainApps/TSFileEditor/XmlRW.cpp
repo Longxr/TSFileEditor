@@ -167,8 +167,6 @@ void XmlRW::ReadMessage()
 {
     Q_ASSERT(xml.isStartElement() && xml.name().toString() == MESSAGE_ELEMENT);
 
-    QString strSource, strTranslation;
-
     while (xml.readNextStartElement()) {
         if (xml.name().toString() == SOURCE_ELEMENT) {
             ReadSource();
@@ -195,5 +193,8 @@ void XmlRW::ReadSource()
 //    qDebug() << "source:" << strSource;
 //    qDebug() << "translation:" << strTranslation;
 
+    if(m_translateMap.contains(strSource)) {
+        qDebug() << "重复key值: " << strSource << "位置: " << __FILE__ << __LINE__;
+    }
     m_translateMap.insert(strSource, strTranslation);
 }
