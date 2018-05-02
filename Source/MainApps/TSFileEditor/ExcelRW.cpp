@@ -3,9 +3,13 @@
 #include <QFileInfo>
 #include <QDebug>
 
-ExcelRW::ExcelRW(QObject *parent) : QObject(parent)
+
+ExcelRW::ExcelRW(int keyColumn, int sourceColumn, int transColumn, QObject *parent) : QObject(parent)
 {
-    nTotalCount = 0;
+    m_TotalCount = 0;
+    m_KeyColumn = keyColumn;
+    m_SourceColumn = sourceColumn;
+    m_TransColumn = transColumn;
 }
 
 bool ExcelRW::ImportFromXlsx(QList<TranslateModel> &list, QString strPath)
@@ -39,30 +43,30 @@ bool ExcelRW::ImportFromXlsx(QList<TranslateModel> &list, QString strPath)
 
         for(int i = 2; i<=cellRange.lastRow(); i++)
         {
-            nTotalCount++;
+            m_TotalCount++;
 
-            if(m_pDoc->cellAt(i,CELL_KEY) == 0)
+            if(m_pDoc->cellAt(i, m_KeyColumn) == 0)
             {
                 strKey = "";
             }else
             {
-                strKey = m_pDoc->cellAt(i, CELL_KEY)->value().toString().trimmed();
+                strKey = m_pDoc->cellAt(i, m_KeyColumn)->value().toString().trimmed();
             }
 
-            if(m_pDoc->cellAt(i, CELL_SOURCE) == 0)
+            if(m_pDoc->cellAt(i, m_SourceColumn) == 0)
             {
                 strSource = "";
             }else
             {
-                strSource = m_pDoc->cellAt(i, CELL_SOURCE)->value().toString().trimmed();
+                strSource = m_pDoc->cellAt(i, m_SourceColumn)->value().toString().trimmed();
             }
 
-            if(m_pDoc->cellAt(i, CELL_TRANSLATE) == 0)
+            if(m_pDoc->cellAt(i, m_TransColumn) == 0)
             {
                 strTranslate = "";
             }else
             {
-                strTranslate = m_pDoc->cellAt(i, CELL_TRANSLATE)->value().toString().trimmed();
+                strTranslate = m_pDoc->cellAt(i, m_TransColumn)->value().toString().trimmed();
             }
 
 //            nErrLine = i;
@@ -106,32 +110,27 @@ bool ExcelRW::ExportToXlsx(QList<TranslateModel>& list, QString strPath)
 
     QXlsx::Document xlsx;
     xlsx.addSheet("Sheet1");
-    xlsx.write(1, CELL_KEY, QVariant(strHeaderkey));
-    xlsx.write(1, CELL_SOURCE, QVariant(strHeaderSource));
-    xlsx.write(1, CELL_TRANSLATE, QVariant(strHeaderTranslate));
+    xlsx.write(1, m_KeyColumn, QVariant(strHeaderkey));
+    xlsx.write(1, m_SourceColumn, QVariant(strHeaderSource));
+    xlsx.write(1, m_TransColumn, QVariant(strHeaderTranslate));
 
     for(int i=0; i < list.count(); i++)
     {
         for(int j=1; j<=3; j++){
-            switch (j) {
-            case CELL_KEY:
-                xlsx.write(i+2, j, QVariant(list[i].GetKey()));
-                break;
-            case CELL_SOURCE:
-                xlsx.write(i+2, j, QVariant(list[i].GetSource()));
-                break;
-            case CELL_TRANSLATE:
-                xlsx.write(i+2, j, QVariant(list[i].GetTranslate()));
-                break;
-            default:
-                break;
-            }
+            xlsx.write(i+2, m_KeyColumn, QVariant(list[i].GetKey()));
+            xlsx.write(i+2, m_SourceColumn, QVariant(list[i].GetSource()));
+            xlsx.write(i+2, m_TransColumn, QVariant(list[i].GetTranslate()));
         }
     }
 
     xlsx.saveAs(strPath);
 
     return true;
+}
+
+void ExcelRW::SetTransColumn(int column)
+{
+    m_TransColumn = column;
 }
 
 bool ExcelRW::checkAccountName(QString string)

@@ -17,17 +17,12 @@ public:
         EXCEL_EMPTY_ERROR = 0,
     };
 
-    enum EXCEL_TRANSLATE_COLUMN{
-        CELL_KEY = 1,
-        CELL_SOURCE,
-        CELL_TRANSLATE,
-    };
-
 public:
-    explicit ExcelRW(QObject *parent = 0);
+    explicit ExcelRW(int keyColumn = 1, int sourceColumn = 2, int transColumn = 3, QObject *parent = 0);
 
     bool  ImportFromXlsx(QList<TranslateModel>& list, QString strPath);
     bool  ExportToXlsx(QList<TranslateModel>& list, QString strPath);
+    void  SetTransColumn(int column);
 
 private:
 
@@ -40,7 +35,11 @@ private:
     bool checkIsNumber(QString string);
     bool checkWebSite(QString site);
 
-    int nTotalCount;
+    int m_TotalCount;
+
+    int m_KeyColumn;
+    int m_SourceColumn;
+    int m_TransColumn;
 };
 
 #endif // EXCELRW_H

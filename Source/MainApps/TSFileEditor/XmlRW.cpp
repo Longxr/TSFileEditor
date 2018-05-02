@@ -194,7 +194,7 @@ void XmlRW::ReadSource()
 //    qDebug() << "translation:" << strTranslation;
 
     if(m_translateMap.contains(strSource)) {
-        qDebug() << "重复key值: " << strSource << "位置: " << __FILE__ << __LINE__;
+        qDebug() << "重复key值: " << strSource << "位置: " << __LINE__;
     }
     m_translateMap.insert(strSource, strTranslation);
 }

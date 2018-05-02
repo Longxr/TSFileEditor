@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     m_toLanguage = "en";
     m_pXmlWorker = new XmlRW(this);
-    m_pExcelWorker = new ExcelRW(this);
+    m_pExcelWorker = new ExcelRW(1, 2, 3, this);
     m_pTranslateWorker = new TranslateWorker(m_transList, this);
 
     ui->comboBox->setView(new QListView());
@@ -80,6 +80,8 @@ void MainWindow::on_generateBtn_clicked()
 {
     bool re;
 
+    m_pExcelWorker->SetTransColumn(ui->transSpinBox->value());
+
     //generate excel file
     if(ui->excelPathEdit->text().isEmpty()) {
         const QString documentLocation = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
@@ -107,6 +109,8 @@ void MainWindow::on_generateBtn_clicked()
 void MainWindow::on_tsUpdateBtn_clicked()
 {
     bool re;
+
+    m_pExcelWorker->SetTransColumn(ui->transSpinBox->value());
 
     //import excel file
     if(ui->excelPathEdit->text().isEmpty()) {
@@ -140,6 +144,8 @@ void MainWindow::on_tsUpdateBtn_clicked()
 void MainWindow::on_translateBtn_clicked()
 {
     bool re;
+
+    m_pExcelWorker->SetTransColumn(ui->transSpinBox->value());
 
     //import excel file
     if(ui->excelPathEdit->text().isEmpty()) {
