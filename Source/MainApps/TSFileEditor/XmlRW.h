@@ -21,7 +21,6 @@ private:
     void ReadXBEL();
     void ReadContext();
     void ReadMessage();
-    void ReadSource();
 
     QXmlStreamReader xml;
     QString m_tsFilePath;

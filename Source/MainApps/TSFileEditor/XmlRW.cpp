@@ -6,6 +6,7 @@
 #define ROOT_ELEMENT        "TS"
 #define CONTEXT_ELEMENT     "context"
 #define MESSAGE_ELEMENT     "message"
+#define LOCATION_ELEMENT    "location"
 #define SOURCE_ELEMENT      "source"
 #define TRANSLATION_ELEMENT "translation"
 
@@ -167,39 +168,39 @@ void XmlRW::ReadMessage()
 {
     Q_ASSERT(xml.isStartElement() && xml.name().toString() == MESSAGE_ELEMENT);
 
+    QString strSource, strTranslation, strLoaction;
+
     while (xml.readNextStartElement()) {
         if (xml.name().toString() == SOURCE_ELEMENT) {
-            ReadSource();
+            strSource = xml.readElementText();
+        }
+        else if (xml.name().toString() == TRANSLATION_ELEMENT) {
+            strTranslation = xml.readElementText();
+        }
+        else if (xml.name().toString() == LOCATION_ELEMENT) {
+            strLoaction.clear();
+
+            QXmlStreamAttributes attributes = xml.attributes();
+            if (attributes.hasAttribute("filename")) {
+                QString strFileName = attributes.value("filename").toString();
+                strLoaction.append(QString("fileName: %1; ").arg(strFileName));
+            }
+            if (attributes.hasAttribute("line")) {
+                QString strLine = attributes.value("line").toString();
+                strLoaction.append(QString("line: %1; ").arg(strLine));
+            }
+
+            xml.skipCurrentElement();
         }
         else {
             xml.skipCurrentElement();
         }
     }
-}
 
-void XmlRW::ReadSource()
-{
-    Q_ASSERT(xml.isStartElement() && xml.name().toString() == SOURCE_ELEMENT);
-
-    QString strSource, strTranslation;
-
-    strSource = xml.readElementText();
-
-    xml.readNextStartElement();
-    if (xml.isStartElement() && xml.name().toString() == TRANSLATION_ELEMENT) {
-        strTranslation = xml.readElementText();
-    }
-    else{// fix <oldsource>
-        xml.readNextStartElement();
-        if (xml.isStartElement() && xml.name().toString() == TRANSLATION_ELEMENT) {
-            strTranslation = xml.readElementText();
-        }
-    }
-
-    qDebug() << "source:" << strSource << "translation:" << strTranslation;
+    qDebug() << "source:" << strSource << "\ttranslation:" << strTranslation;
 
     if(m_translateMap.contains(strSource)) {
-        qDebug() << "重复key值: " << strSource;
+        qDebug() << "重复key值: " << strSource << "位置：" << strLoaction;
     }
     m_translateMap.insert(strSource, strTranslation);
 }
