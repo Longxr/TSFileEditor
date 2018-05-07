@@ -189,12 +189,17 @@ void XmlRW::ReadSource()
     if (xml.isStartElement() && xml.name().toString() == TRANSLATION_ELEMENT) {
         strTranslation = xml.readElementText();
     }
+    else{// fix <oldsource>
+        xml.readNextStartElement();
+        if (xml.isStartElement() && xml.name().toString() == TRANSLATION_ELEMENT) {
+            strTranslation = xml.readElementText();
+        }
+    }
 
-//    qDebug() << "source:" << strSource;
-//    qDebug() << "translation:" << strTranslation;
+    qDebug() << "source:" << strSource << "translation:" << strTranslation;
 
     if(m_translateMap.contains(strSource)) {
-        qDebug() << "重复key值: " << strSource << "位置: " << __LINE__;
+        qDebug() << "重复key值: " << strSource;
     }
     m_translateMap.insert(strSource, strTranslation);
 }
