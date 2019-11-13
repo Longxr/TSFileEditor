@@ -1,5 +1,8 @@
 # 翻译文件（.ts）和Excel文件的相互转换工具
 
+## 运行环境
+Win10 Qt5.12.2 Mingw && MSVC VS2017
+
 ## 主要功能
 ### 生成待翻译字符串的excel文件
 ![生成excel文件](picture/gen_excel.gif)
