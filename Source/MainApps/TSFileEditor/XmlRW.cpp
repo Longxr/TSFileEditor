@@ -200,7 +200,7 @@ void XmlRW::ReadMessage()
     qDebug() << "source:" << strSource << "\ttranslation:" << strTranslation;
 
     if(m_translateMap.contains(strSource)) {
-        qDebug() << "重复key值: " << strSource << "位置：" << strLoaction;
+        qDebug() << "repeat key: " << strSource << "translation:" << strLoaction;
     }
     m_translateMap.insert(strSource, strTranslation);
 }

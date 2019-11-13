@@ -9,7 +9,7 @@ TranslateWorker::TranslateWorker(QList<TranslateModel> &list, QObject *parent) :
 {
     m_pNetWorker = NetWorker::instance();
 
-    connect(this, &TranslateWorker::STranslateResult, this, SlotTranslateResult);
+    connect(this, &TranslateWorker::STranslateResult, this, &TranslateWorker::SlotTranslateResult);
 }
 
 TranslateWorker::~TranslateWorker()

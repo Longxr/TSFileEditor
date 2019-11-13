@@ -45,7 +45,7 @@ bool ExcelRW::ImportFromXlsx(QList<TranslateModel> &list, QString strPath)
         {
             m_TotalCount++;
 
-            if(m_pDoc->cellAt(i, m_KeyColumn) == 0)
+            if(m_pDoc->cellAt(i, m_KeyColumn) == nullptr)
             {
                 strKey = "";
             }else
@@ -53,7 +53,7 @@ bool ExcelRW::ImportFromXlsx(QList<TranslateModel> &list, QString strPath)
                 strKey = m_pDoc->cellAt(i, m_KeyColumn)->value().toString().trimmed();
             }
 
-            if(m_pDoc->cellAt(i, m_SourceColumn) == 0)
+            if(m_pDoc->cellAt(i, m_SourceColumn) == nullptr)
             {
                 strSource = "";
             }else
@@ -61,7 +61,7 @@ bool ExcelRW::ImportFromXlsx(QList<TranslateModel> &list, QString strPath)
                 strSource = m_pDoc->cellAt(i, m_SourceColumn)->value().toString().trimmed();
             }
 
-            if(m_pDoc->cellAt(i, m_TransColumn) == 0)
+            if(m_pDoc->cellAt(i, m_TransColumn) == nullptr)
             {
                 strTranslate = "";
             }else
@@ -94,13 +94,13 @@ bool ExcelRW::ImportFromXlsx(QList<TranslateModel> &list, QString strPath)
 bool ExcelRW::ExportToXlsx(QList<TranslateModel>& list, QString strPath)
 {
     if(strPath.isEmpty()) {
-        qDebug() << tr("导出路径不能为空");
+        qDebug() << tr("Export path cannot be empty");
         return false;
     }
 
     if (list.count() <= 0)
     {
-        qDebug() << tr("未读取翻译文件");
+        qDebug() << tr("Unread translation file");
         return false;
     }
 
@@ -141,7 +141,7 @@ bool ExcelRW::checkAccountName(QString string)
     }
 
     QRegExp regp("^[a-zA-Z_0-9]+$");
-    QRegExpValidator validator(regp,0);
+    QRegExpValidator validator(regp,nullptr);
     int pos = 0;
     if(QValidator::Acceptable != validator.validate(string, pos)){
         return false;
@@ -173,7 +173,7 @@ bool ExcelRW::checkIsNumber(QString string)
         return false;
     }
     QRegExp regp("^[0-9]+$");
-    QRegExpValidator validator(regp,0);
+    QRegExpValidator validator(regp,nullptr);
     int pos=0;
     if(QValidator::Acceptable != validator.validate(string,pos))
     {
@@ -189,7 +189,7 @@ bool ExcelRW::checkWebSite(QString site)
         return false;
     }
     QRegExp regp("^([a-zA-Z0-9]([a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,6}$");
-    QRegExpValidator validator(regp,0);
+    QRegExpValidator validator(regp,nullptr);
     int pos=0;
     if(QValidator::Acceptable != validator.validate(site, pos))
     {

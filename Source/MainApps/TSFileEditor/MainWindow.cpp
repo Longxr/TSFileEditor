@@ -41,7 +41,7 @@ MainWindow::~MainWindow()
 void MainWindow::on_tsLookBtn_clicked()
 {
     const QString documentLocation = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
-    QString fileName = QFileDialog::getOpenFileName(this, tr("选择ts文件"), documentLocation, "Files (*.ts)");
+    QString fileName = QFileDialog::getOpenFileName(this, tr("select .ts file"), documentLocation, "Files (*.ts)");
 
     if(fileName.isEmpty()){
         return;
@@ -60,7 +60,7 @@ void MainWindow::on_tsLookBtn_clicked()
 void MainWindow::on_excelLookBtn_clicked()
 {
     const QString documentLocation = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
-    QString fileName = QFileDialog::getOpenFileName(this, tr("选择excel文件"), documentLocation, "Files (*.xlsx)");
+    QString fileName = QFileDialog::getOpenFileName(this, tr("select excel file"), documentLocation, "Files (*.xlsx)");
 
     if(fileName.isEmpty()){
         return;
