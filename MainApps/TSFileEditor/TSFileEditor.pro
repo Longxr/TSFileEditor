@@ -12,7 +12,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = TSFileEditor
 TEMPLATE = app
 
-win32-msvc*:QMAKE_CXXFLAGS += /wd"4100"
 include(./../../Path.pri)
 
 INCLUDEPATH += ../../Libraries

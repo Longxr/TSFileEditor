@@ -49,6 +49,5 @@ CMakeLists.txt.user*
 *.DS_Store
 
 ### build ###
-Intermediate
-RunImage
+bin
 
