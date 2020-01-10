@@ -91,6 +91,7 @@ jobs:
           Copy-Item bin\*.exe ${env:archiveName}\
           # 拷贝dll
           Copy-Item bin\*.dll ${env:archiveName}\
+          Copy-Item ssl\*.dll ${env:archiveName}\
           # 拷贝依赖
           windeployqt --qmldir . ${env:archiveName}\${env:targetName}
           # 打包zip
