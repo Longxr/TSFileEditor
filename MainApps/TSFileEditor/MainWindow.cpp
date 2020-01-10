@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_toLanguage = "en";
     m_pXmlWorker = new XmlRW(this);
     m_pExcelWorker = new ExcelRW(1, 2, 3, this);
-    m_pTranslateWorker = new TranslateWorker(ui->youdaoAppIdlineEdit->text(), ui->youdaoKeylineEdit->text(), m_transList, this);
+    m_pTranslateWorker = new TranslateWorker(m_transList, this);
 
     ui->youdaoTipLabel->setVisible(false);
     ui->comboBox->setView(new QListView());
@@ -162,6 +162,7 @@ void MainWindow::on_translateBtn_clicked()
 //    m_pTranslateWorker->YoudaoTranslate("你好", "auto", m_toLanguage);
 
     //translate excel file
+    m_pTranslateWorker->SetIdKey(ui->youdaoAppIdlineEdit->text(), ui->youdaoKeylineEdit->text());
     re = m_pTranslateWorker->YoudaoTranslate("auto", m_toLanguage);
     if(re) {
         onReceiveMsg("translate excel file success");

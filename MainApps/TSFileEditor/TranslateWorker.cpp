@@ -3,9 +3,7 @@
 #include <QCryptographicHash>
 #include <QUuid>
 
-TranslateWorker::TranslateWorker(const QString& id, const QString& key, QList<TranslateModel> &list, QObject *parent) : QObject(parent),
-    m_appId(id),
-    m_appKey(key),
+TranslateWorker::TranslateWorker(QList<TranslateModel> &list, QObject *parent) : QObject(parent),
     m_list(list)
 {
     m_pNetWorker = NetWorker::instance();
@@ -16,6 +14,12 @@ TranslateWorker::TranslateWorker(const QString& id, const QString& key, QList<Tr
 TranslateWorker::~TranslateWorker()
 {
 
+}
+
+void TranslateWorker::SetIdKey(const QString &id, const QString &key)
+{
+    m_appId = id;
+    m_appKey = key;
 }
 
 bool TranslateWorker::YoudaoTranslate(const QString &from, const QString &to)

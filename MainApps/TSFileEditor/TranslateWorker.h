@@ -11,9 +11,10 @@ class TranslateWorker : public QObject
     Q_OBJECT
 public:
 
-    explicit TranslateWorker(const QString& id, const QString& key, QList<TranslateModel> &list, QObject *parent = nullptr);
+    explicit TranslateWorker(QList<TranslateModel> &list, QObject *parent = nullptr);
     ~TranslateWorker();
 
+    void SetIdKey(const QString& id, const QString& key);
     bool YoudaoTranslate(const QString &from = QString("auto"), const QString &to = QString("en"));
 
 signals:
