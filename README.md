@@ -6,6 +6,23 @@ Win10 Qt5.12.2 Mingw && MSVC VS2017
 ## 依赖库
 [qtxlsx](https://qtxlsx.debao.me/)
 
+## status
+| [Windows][win-link]|[MacOS][macos-link]|[Release][release-link]|[Download][download-link]|
+|--------------------|-------------------|-----------------------|-------------------------|
+|    ![win-badge]    |  ![macos-badge]   |   ![release-badge]    |    ![download-badge]    |
+
+[win-link]: https://github.com/Longxr/TSFileEditor/actions?query=workflow%3AWindows "WindowsAction"
+[win-badge]: https://github.com/Longxr/TSFileEditor/workflows/Windows/badge.svg  "Windows"
+
+[macos-link]: https://github.com/Longxr/TSFileEditor/actions?query=workflow%3AMacOS "MacOSAction"
+[macos-badge]: https://github.com/Longxr/TSFileEditor/workflows/MacOS/badge.svg "MacOS"
+
+[release-link]: https://github.com/Longxr/TSFileEditor/releases "Release status"
+[release-badge]: https://github.com/Longxr/TSFileEditor.svg?style=flat-square "Release status"
+
+[download-link]: https://github.com/Longxr/TSFileEditor/releases/latest "Download status"
+[download-badge]: https://github.com/Longxr/TSFileEditor/total.svg?style=flat-square "Download status"
+
 ## 主要功能
 ### 生成待翻译字符串的excel文件
 ![生成excel文件](picture/gen_excel.gif)
