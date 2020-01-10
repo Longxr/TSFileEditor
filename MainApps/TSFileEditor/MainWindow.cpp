@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_pExcelWorker = new ExcelRW(1, 2, 3, this);
     m_pTranslateWorker = new TranslateWorker(ui->youdaoAppIdlineEdit->text(), ui->youdaoKeylineEdit->text(), m_transList, this);
 
+    ui->youdaoTipLabel->setVisible(false);
     ui->comboBox->setView(new QListView());
     ui->comboBox->addItem("英文", "en");
     ui->comboBox->addItem("中文", "zh-CHS");
@@ -29,12 +30,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->comboBox->addItem("俄文", "ru");
     ui->comboBox->addItem("葡萄牙文", "pt");
     ui->comboBox->addItem("西班牙文", "es");
+    ui->comboBox->addItem("其他", "other");
 
     connect(ui->comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::onComboBoxChanged);
     connect(m_pExcelWorker, &ExcelRW::error, this, &MainWindow::onReceiveMsg);
     connect(m_pTranslateWorker, &TranslateWorker::error, this, &MainWindow::onReceiveMsg);
 
-    qDebug() <<  QSslSocket::supportsSsl() <<  QSslSocket::sslLibraryBuildVersionString() << QSslSocket::sslLibraryVersionString();
+    qDebug() <<  "qt openssl support: " << QSslSocket::supportsSsl() <<  QSslSocket::sslLibraryBuildVersionString() << QSslSocket::sslLibraryVersionString();
 }
 
 MainWindow::~MainWindow()
@@ -50,15 +52,9 @@ void MainWindow::on_tsLookBtn_clicked()
     if(fileName.isEmpty()){
         return;
     }
-    else{
-        QFileInfo info(fileName);
-        if("ts" != info.suffix()){
-            onReceiveMsg("File type is not supported");
-            return;
-        }
-    }
 
     ui->tsPathEdit->setText(fileName);
+    on_tsImportBtn_clicked();
 }
 
 void MainWindow::on_excelLookBtn_clicked()
@@ -104,6 +100,7 @@ void MainWindow::on_generateBtn_clicked()
     re = m_pExcelWorker->ExportToXlsx(m_transList, ui->excelPathEdit->text());
     if(re) {
         onReceiveMsg("export excel file success");
+        ui->youdaoTipLabel->setVisible(false);
     } else {
         onReceiveMsg("export excel file failed");
     }
@@ -123,6 +120,7 @@ void MainWindow::on_tsUpdateBtn_clicked()
     re = m_pExcelWorker->ImportFromXlsx(m_transList, ui->excelPathEdit->text());
     if(re) {
         onReceiveMsg("import excel file success");
+        ui->youdaoTipLabel->setVisible(false);
     } else {
         onReceiveMsg("import excel file failed");
     }
@@ -167,6 +165,7 @@ void MainWindow::on_translateBtn_clicked()
     re = m_pTranslateWorker->YoudaoTranslate("auto", m_toLanguage);
     if(re) {
         onReceiveMsg("translate excel file success");
+        ui->youdaoTipLabel->setVisible(true);
     }
     else {
         onReceiveMsg("translate excel file failed");
@@ -175,7 +174,14 @@ void MainWindow::on_translateBtn_clicked()
 
 void MainWindow::onComboBoxChanged(int)
 {
-    m_toLanguage = ui->comboBox->currentData().toString();
+    QString langCode = ui->comboBox->currentData().toString();
+
+    if ("other" == langCode) {
+        m_toLanguage = ui->otherLineEdit->text();
+    } else {
+        m_toLanguage = langCode;
+    }
+
 }
 
 
@@ -189,6 +195,13 @@ void MainWindow::on_tsImportBtn_clicked()
         on_tsLookBtn_clicked();
     }
 
+    QFileInfo info(ui->tsPathEdit->text());
+    if (!info.isFile() || "ts" != info.suffix()){
+        onReceiveMsg("File type is not supported");
+        return;
+    }
+
+    m_transList.clear();
     re = m_pXmlWorker->ImportFromTS(m_transList, ui->tsPathEdit->text());
 
     if(re) {
@@ -201,4 +214,80 @@ void MainWindow::on_tsImportBtn_clicked()
 void MainWindow::onReceiveMsg(const QString &msg)
 {
     ui->statusBar->showMessage(msg);
+}
+
+void MainWindow::on_tsDirLookBtn_clicked()
+{
+    const QString documentLocation = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+    QString dirName = QFileDialog::getExistingDirectory(this, tr("select .ts dir"), documentLocation);
+
+    if(dirName.isEmpty()){
+        return;
+    }
+
+    ui->tsDirEdit->setText(dirName);
+}
+
+void MainWindow::on_excelDirBtn_clicked()
+{
+    const QString documentLocation = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+    QString dirName = QFileDialog::getExistingDirectory(this, tr("select excel dir"), documentLocation);
+
+    if(dirName.isEmpty()){
+        return;
+    }
+
+    ui->excelDirEdit->setText(dirName);
+}
+
+void MainWindow::on_generateBtn_2_clicked()
+{
+    bool re;
+
+    QFileInfo tsDirinfo(ui->tsDirEdit->text());
+    if (!tsDirinfo.isDir()){
+        onReceiveMsg("ts dir is empty");
+        return;
+    }
+
+    QFileInfo excelDirinfo(ui->excelDirEdit->text());
+    if (!excelDirinfo.isDir()){
+        onReceiveMsg("excel dir is empty");
+        return;
+    }
+
+    QStringList filters;
+    filters << QString("*.ts");
+    QDir tsdir(ui->tsDirEdit->text());
+    tsdir.setFilter(QDir::Files | QDir::NoSymLinks);
+    tsdir.setNameFilters(filters);
+
+    if (tsdir.count() <= 0) {
+        onReceiveMsg("ts dir ts file is 0");
+        return;
+    }
+
+    for (QFileInfo info : tsdir.entryInfoList())
+    {
+        //import ts file
+        m_transList.clear();
+        re = m_pXmlWorker->ImportFromTS(m_transList, info.absoluteFilePath());
+
+        if(re) {
+            onReceiveMsg("import " + info.fileName() + " success");
+        } else {
+            onReceiveMsg("import " + info.fileName() + " failed");
+        }
+
+        //generate excel file
+        m_pExcelWorker->SetTransColumn(ui->transSpinBox->value());
+        QString excelFileName = ui->excelDirEdit->text() + "/" + info.baseName() + ".xlsx";
+        re = m_pExcelWorker->ExportToXlsx(m_transList, excelFileName);
+        if(re) {
+            onReceiveMsg("export " + excelFileName + " success");
+            ui->youdaoTipLabel->setVisible(false);
+        } else {
+            onReceiveMsg("export " + excelFileName + " failed");
+        }
+    }
 }

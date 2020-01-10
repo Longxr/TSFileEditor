@@ -33,6 +33,10 @@ private slots:
     void onComboBoxChanged(int);
     void onReceiveMsg(const QString& msg);
 
+    void on_tsDirLookBtn_clicked();
+    void on_excelDirBtn_clicked();
+    void on_generateBtn_2_clicked();
+
 private:
     Ui::MainWindow*         ui;
 

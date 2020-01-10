@@ -53,8 +53,6 @@ void TranslateWorker::YoudaoTranslate(int index, const QString &source)
     query.addQueryItem("signType", "v3");
     query.addQueryItem("curtime", timestamp);
 
-    qDebug() << source.toUtf8().toPercentEncoding();
-
     QNetworkReply *pReply = (m_pNetWorker->get(baseUrl, query));
 
     connect(pReply, &QNetworkReply::finished, this, [=](){

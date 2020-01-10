@@ -48,23 +48,19 @@ bool XmlRW::ImportFromTS(QList<TranslateModel>& list, QString strPath)
                 }
 
                 ReadXBEL();
-            }
-            else {
+            } else {
                 xml.raiseError("XML file format error.");
             }
         }
 
         file.close();
-
         list.clear();
-        QMap<QString, QString>::iterator mapIter = m_translateMap.begin();
-        for(mapIter; mapIter != m_translateMap.end(); ++mapIter)
-        {
-    //        qDebug() << mapIter.key() << ": " << mapIter.value();
+
+        for (auto i = m_translateMap.constBegin(); i != m_translateMap.constEnd(); i++) {
             TranslateModel model;
-            model.SetKey(mapIter.key());
-            model.SetSource(QString());
-            model.SetTranslate(mapIter.value());
+            model.SetKey(i.key());
+            model.SetSource(i.value());
+            model.SetTranslate(i.value());
             list.append(model);
         }
 
@@ -173,11 +169,9 @@ void XmlRW::ReadMessage()
     while (xml.readNextStartElement()) {
         if (xml.name().toString() == SOURCE_ELEMENT) {
             strSource = xml.readElementText();
-        }
-        else if (xml.name().toString() == TRANSLATION_ELEMENT) {
+        } else if (xml.name().toString() == TRANSLATION_ELEMENT) {
             strTranslation = xml.readElementText();
-        }
-        else if (xml.name().toString() == LOCATION_ELEMENT) {
+        } else if (xml.name().toString() == LOCATION_ELEMENT) {
             strLoaction.clear();
 
             QXmlStreamAttributes attributes = xml.attributes();
@@ -191,13 +185,12 @@ void XmlRW::ReadMessage()
             }
 
             xml.skipCurrentElement();
-        }
-        else {
+        } else {
             xml.skipCurrentElement();
         }
     }
 
-    qDebug() << "source:" << strSource << "\ttranslation:" << strTranslation;
+    qDebug() << "key:" << strSource << "\ttranslation:" << strTranslation;
 
     if(m_translateMap.contains(strSource)) {
         qDebug() << "repeat key: " << strSource << "translation:" << strLoaction;
