@@ -11,7 +11,7 @@ class TranslateWorker : public QObject
     Q_OBJECT
 public:
 
-    explicit TranslateWorker(QList<TranslateModel> &list, QObject *parent = nullptr);
+    explicit TranslateWorker(const QString& id, const QString& key, QList<TranslateModel> &list, QObject *parent = nullptr);
     ~TranslateWorker();
 
     bool YoudaoTranslate(const QString &from = QString("auto"), const QString &to = QString("en"));
@@ -24,14 +24,16 @@ private slots:
     void onTranslateResult(int index, const QString &str);
 
 private:
-    QByteArray GetYoudaoSign(const QString &source, int salt);
+    QByteArray GetYoudaoSign(const QString &source, const QString& uuid, const QString& timestamp);
     void YoudaoTranslate(int index, const QString &source);
 
     NetWorker*              m_pNetWorker;
-    QList<TranslateModel>   &m_list;
 
     QString                 m_fromLang;
     QString                 m_toLang;
+    QString                 m_appId;
+    QString                 m_appKey;
+    QList<TranslateModel>   &m_list;
 };
 
 #endif // TRANSLATEWORKER_H

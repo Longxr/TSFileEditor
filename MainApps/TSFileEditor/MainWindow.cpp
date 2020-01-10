@@ -7,6 +7,7 @@
 #include <QStandardPaths>
 #include <QFileDialog>
 #include <QListView>
+#include <QSslSocket>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -17,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_toLanguage = "en";
     m_pXmlWorker = new XmlRW(this);
     m_pExcelWorker = new ExcelRW(1, 2, 3, this);
-    m_pTranslateWorker = new TranslateWorker(m_transList, this);
+    m_pTranslateWorker = new TranslateWorker(ui->youdaoAppIdlineEdit->text(), ui->youdaoKeylineEdit->text(), m_transList, this);
 
     ui->comboBox->setView(new QListView());
     ui->comboBox->addItem("英文", "en");
@@ -32,6 +33,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::onComboBoxChanged);
     connect(m_pExcelWorker, &ExcelRW::error, this, &MainWindow::onReceiveMsg);
     connect(m_pTranslateWorker, &TranslateWorker::error, this, &MainWindow::onReceiveMsg);
+
+    qDebug() <<  QSslSocket::supportsSsl() <<  QSslSocket::sslLibraryBuildVersionString() << QSslSocket::sslLibraryVersionString();
 }
 
 MainWindow::~MainWindow()
@@ -68,7 +71,7 @@ void MainWindow::on_excelLookBtn_clicked()
     }
     else{
         QFileInfo info(fileName);
-        if("xlsx" != info.suffix()){
+        if ("xlsx" != info.suffix()){
             onReceiveMsg("File type is not supported");
             return;
         }

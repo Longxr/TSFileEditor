@@ -53,7 +53,7 @@ QNetworkReply * NetWorker::get(const QString &baseUrl, const QUrlQuery &query)
 {
     QUrl url(baseUrl);
     url.setQuery(query);
-//    qDebug() << "get argv: " << url;
+    qDebug() << "get argv: " << url;
     return (m_manager->get(QNetworkRequest(url)));
 }
 
@@ -63,7 +63,7 @@ QNetworkReply * NetWorker::post(const QString &url, const QByteArray &data)
     request.setUrl(QUrl(url));
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 
-//    qDebug() << "post argv: " << data;
+    qDebug() << "post argv: " << data;
     return (m_manager->post(request, data));
 }
 

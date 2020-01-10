@@ -31,8 +31,7 @@ HEADERS  += MainWindow.h \
     ExcelRW.h \
     DataModel/TranslateModel.h \
     NetWorker.h \
-    TranslateWorker.h \
-    AppConfig.h
+    TranslateWorker.h
 
 FORMS    += MainWindow.ui
 

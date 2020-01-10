@@ -1,10 +1,11 @@
 #include "TranslateWorker.h"
-#include "AppConfig.h"
-
 #include <NetWorker.h>
 #include <QCryptographicHash>
+#include <QUuid>
 
-TranslateWorker::TranslateWorker(QList<TranslateModel> &list, QObject *parent) : QObject(parent),
+TranslateWorker::TranslateWorker(const QString& id, const QString& key, QList<TranslateModel> &list, QObject *parent) : QObject(parent),
+    m_appId(id),
+    m_appKey(key),
     m_list(list)
 {
     m_pNetWorker = NetWorker::instance();
@@ -36,25 +37,25 @@ bool TranslateWorker::YoudaoTranslate(const QString &from, const QString &to)
 
 void TranslateWorker::YoudaoTranslate(int index, const QString &source)
 {
-    QString baseUrl = QString("http://openapi.youdao.com/api");
+    QString baseUrl = QString("https://openapi.youdao.com/api");
 
-    int salt = 2;
+    QString uuid = QUuid::createUuid().toString();
+    uuid.remove("{").remove("}").remove("-");
+    QString timestamp = QString::number(QDateTime::currentDateTime().toSecsSinceEpoch());
 
-    QByteArray dataArray;
-    dataArray.append("q=");
-    dataArray.append(source.toUtf8().toPercentEncoding());
-    dataArray.append("&from=");
-    dataArray.append(m_fromLang);
-    dataArray.append("&to=");
-    dataArray.append(m_toLang);
-    dataArray.append("&appKey=");
-    dataArray.append(APP_KEY);
-    dataArray.append("&salt=");
-    dataArray.append(QString::number(salt));
-    dataArray.append("&sign=");
-    dataArray.append(GetYoudaoSign(source, salt));
+    QUrlQuery query;
+    query.addQueryItem("q", source.toUtf8().toPercentEncoding());
+    query.addQueryItem("from", m_fromLang);
+    query.addQueryItem("to", m_toLang);
+    query.addQueryItem("appKey", m_appId);
+    query.addQueryItem("salt", uuid);
+    query.addQueryItem("sign", GetYoudaoSign(source, uuid, timestamp));
+    query.addQueryItem("signType", "v3");
+    query.addQueryItem("curtime", timestamp);
 
-    QNetworkReply *pReply = (m_pNetWorker->post(baseUrl, dataArray));
+    qDebug() << source.toUtf8().toPercentEncoding();
+
+    QNetworkReply *pReply = (m_pNetWorker->get(baseUrl, query));
 
     connect(pReply, &QNetworkReply::finished, this, [=](){
         if (pReply->error() != QNetworkReply::NoError) {
@@ -66,7 +67,7 @@ void TranslateWorker::YoudaoTranslate(int index, const QString &source)
 
             QByteArray replyData = pReply->readAll();
 
-//            qDebug() << replyData;
+            qDebug() << replyData;
 
             QJsonParseError jsonError;
             QJsonDocument jsonDocument = QJsonDocument::fromJson(replyData, &jsonError);
@@ -93,15 +94,15 @@ void TranslateWorker::YoudaoTranslate(int index, const QString &source)
     });
 }
 
-QByteArray TranslateWorker::GetYoudaoSign(const QString &source, int salt)
+QByteArray TranslateWorker::GetYoudaoSign(const QString &source, const QString &uuid, const QString &timestamp)
 {
     QByteArray sign;
 
-    QString str = APP_KEY + source + QString::number(salt) + APP_SECRET;
+    QString str = m_appId + source + uuid + timestamp + m_appKey;
 
 //    qDebug() << "str: " << str;
 
-    sign = QCryptographicHash::hash(str.toUtf8(), QCryptographicHash::Md5).toHex().toUpper();
+    sign = QCryptographicHash::hash(str.toUtf8(), QCryptographicHash::Sha256).toHex().toUpper();
 
 //    qDebug() << sign;
 
