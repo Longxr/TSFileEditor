@@ -18,10 +18,10 @@ Win10 Qt5.12.2 Mingw && MSVC VS2017
 [macos-badge]: https://github.com/Longxr/TSFileEditor/workflows/MacOS/badge.svg "MacOS"
 
 [release-link]: https://github.com/Longxr/TSFileEditor/releases "Release status"
-[release-badge]: https://github.com/Longxr/TSFileEditor.svg?style=flat-square "Release status"
+[release-badge]: https://img.shields.io/github/release/Longxr/TSFileEditor.svg?style=flat-square "Release status"
 
 [download-link]: https://github.com/Longxr/TSFileEditor/releases/latest "Download status"
-[download-badge]: https://github.com/Longxr/TSFileEditor/total.svg?style=flat-square "Download status"
+[download-badge]: https://img.shields.io/github/downloads/Longxr/TSFileEditor/total.svg?style=flat-square "Download status"
 
 ## 主要功能
 ### 生成待翻译字符串的excel文件
