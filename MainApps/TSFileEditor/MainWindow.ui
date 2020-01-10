@@ -13,6 +13,11 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">QStatusBar {
+color: #FF0000;
+}</string>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QLineEdit" name="tsPathEdit">
     <property name="geometry">
@@ -168,6 +173,7 @@
     </property>
    </widget>
   </widget>
+  <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

@@ -24,18 +24,14 @@ public:
 
 private slots:
     void on_tsLookBtn_clicked();
-
     void on_excelLookBtn_clicked();
-
     void on_generateBtn_clicked();
-
     void on_tsUpdateBtn_clicked();
-
     void on_translateBtn_clicked();
-
-    void SlotComboBoxChanged(int);
-
     void on_tsImportBtn_clicked();
+
+    void onComboBoxChanged(int);
+    void onReceiveMsg(const QString& msg);
 
 private:
     Ui::MainWindow*         ui;

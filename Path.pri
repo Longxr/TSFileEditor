@@ -9,7 +9,6 @@ CONFIG(release, debug|release) {
 
 #DESTDIR         = $$PWD/../RunImage/$$BuildType
 DESTDIR = $$absolute_path($$PWD/bin/)
-message($$DESTDIR)
 
 
 

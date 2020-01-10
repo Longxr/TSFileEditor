@@ -11,16 +11,17 @@ class TranslateWorker : public QObject
     Q_OBJECT
 public:
 
-    explicit TranslateWorker(QList<TranslateModel> &list, QObject *parent = 0);
+    explicit TranslateWorker(QList<TranslateModel> &list, QObject *parent = nullptr);
     ~TranslateWorker();
 
     bool YoudaoTranslate(const QString &from = QString("auto"), const QString &to = QString("en"));
 
 signals:
-    void STranslateResult(int index, const QString &str);
+    void translateResult(int index, const QString &str);
+    void error(const QString& msg);
 
 private slots:
-    void SlotTranslateResult(int index, const QString &str);
+    void onTranslateResult(int index, const QString &str);
 
 private:
     QByteArray GetYoudaoSign(const QString &source, int salt);

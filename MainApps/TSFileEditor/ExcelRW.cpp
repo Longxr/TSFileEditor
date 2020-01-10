@@ -1,8 +1,6 @@
 #include "ExcelRW.h"
 #include <QRegExpValidator>
 #include <QFileInfo>
-#include <QDebug>
-
 
 ExcelRW::ExcelRW(int keyColumn, int sourceColumn, int transColumn, QObject *parent) : QObject(parent)
 {
@@ -22,7 +20,7 @@ bool ExcelRW::ImportFromXlsx(QList<TranslateModel> &list, QString strPath)
     QXlsx::CellRange cellRange;
 
     QXlsx::Document* m_pDoc = new QXlsx::Document(strPath);
-    if(m_pDoc == NULL)
+    if(nullptr == m_pDoc)
     {
         return bSuccess;
     }
@@ -35,7 +33,7 @@ bool ExcelRW::ImportFromXlsx(QList<TranslateModel> &list, QString strPath)
 
     do
     {
-        if(1 == cellRange.lastRow() && (m_pDoc->cellAt(cellRange.lastRow(), cellRange.lastColumn()) == 0))
+        if(1 == cellRange.lastRow() && (nullptr == m_pDoc->cellAt(cellRange.lastRow(), cellRange.lastColumn())))
         {
             bSuccess = true;
             break;
@@ -94,13 +92,13 @@ bool ExcelRW::ImportFromXlsx(QList<TranslateModel> &list, QString strPath)
 bool ExcelRW::ExportToXlsx(QList<TranslateModel>& list, QString strPath)
 {
     if(strPath.isEmpty()) {
-        qDebug() << tr("Export path cannot be empty");
+        emit error("Export path cannot be empty");
         return false;
     }
 
     if (list.count() <= 0)
     {
-        qDebug() << tr("Unread translation file");
+        emit error("*.ts file is empty");
         return false;
     }
 
@@ -158,7 +156,7 @@ bool ExcelRW::checkPassword(QString string)
     }
 
     QRegExp regp("^[\\x21-\\x7E]+$");
-    QRegExpValidator validator(regp,0);
+    QRegExpValidator validator(regp, this);
     int pos = 0;
     if(QValidator::Acceptable != validator.validate(string, pos)){
         return false;

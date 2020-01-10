@@ -24,8 +24,8 @@ public:
     bool  ExportToXlsx(QList<TranslateModel>& list, QString strPath);
     void  SetTransColumn(int column);
 
-private:
-
+signals:
+    void error(const QString& msg);
 
 public slots:
 
