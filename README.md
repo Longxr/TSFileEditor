@@ -7,9 +7,9 @@ Win10 Qt5.12.2 Mingw && MSVC VS2017
 [qtxlsx](https://qtxlsx.debao.me/)
 
 ## status
-| [Windows][win-link]|[MacOS][macos-link]|[Release][release-link]|[Download][download-link]|
-|--------------------|-------------------|-----------------------|-------------------------|
-|    ![win-badge]    |  ![macos-badge]   |   ![release-badge]    |    ![download-badge]    |
+| [Windows][win-link] | [MacOS][macos-link] | [Release][release-link] | [Download][download-link] |
+| ------------------- | ------------------- | ----------------------- | ------------------------- |
+| ![win-badge]        | ![macos-badge]      | ![release-badge]        | ![download-badge]         |
 
 [win-link]: https://github.com/Longxr/TSFileEditor/actions?query=workflow%3AWindows "WindowsAction"
 [win-badge]: https://github.com/Longxr/TSFileEditor/workflows/Windows/badge.svg  "Windows"
@@ -43,9 +43,9 @@ Win10 Qt5.12.2 Mingw && MSVC VS2017
 
 ![填写位置](picture/code.png)
 
-以后有时间我再加个在主界面填写这个ID和密钥的地方(￣▽￣)"（懒得改....）
+主界面最下方有填写应用ID和应用密钥的地方，在网页申请好后使用即可。
 
-* 下面是中文翻译成日文的栗子：
+* 下面是中文翻译成日文的栗子（导入ts文件->有道翻译->生成excel）：
 ![translate.gif](picture/translate.gif)
 
 点击*excel生成*按钮后，就可以得到翻译好的excel了：
