@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>570</width>
-    <height>466</height>
+    <height>481</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -177,7 +177,7 @@ color: #FF0000;
             <string/>
            </property>
            <property name="placeholderText">
-            <string>excel目录路径</string>
+            <string>excel文件路径</string>
            </property>
           </widget>
          </item>
@@ -196,6 +196,13 @@ color: #FF0000;
           <widget class="QPushButton" name="generateBtn_2">
            <property name="text">
             <string>批量excel生成</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="tsUpdateBtn_2">
+           <property name="text">
+            <string>批量译文写入</string>
            </property>
           </widget>
          </item>

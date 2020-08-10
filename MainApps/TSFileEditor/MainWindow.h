@@ -36,6 +36,7 @@ private slots:
     void on_tsDirLookBtn_clicked();
     void on_excelDirBtn_clicked();
     void on_generateBtn_2_clicked();
+    void on_tsUpdateBtn_2_clicked();
 
 private:
     Ui::MainWindow*         ui;
@@ -47,6 +48,11 @@ private:
     XmlRW*                  m_pXmlWorker;
     ExcelRW*                m_pExcelWorker;
     TranslateWorker*        m_pTranslateWorker;
+
+    QMap<QString, int>      m_tsColumnMap;
+
+    void readConfig();
+    void saveConfig();
 };
 
 #endif // MAINWINDOW_H

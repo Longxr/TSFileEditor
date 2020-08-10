@@ -36,11 +36,13 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_pExcelWorker, &ExcelRW::error, this, &MainWindow::onReceiveMsg);
     connect(m_pTranslateWorker, &TranslateWorker::error, this, &MainWindow::onReceiveMsg);
 
-    qDebug() <<  "qt openssl support: " << QSslSocket::supportsSsl() <<  QSslSocket::sslLibraryBuildVersionString() << QSslSocket::sslLibraryVersionString();
+    readConfig();
 }
 
 MainWindow::~MainWindow()
 {
+    saveConfig();
+
     delete ui;
 }
 
@@ -232,13 +234,20 @@ void MainWindow::on_tsDirLookBtn_clicked()
 void MainWindow::on_excelDirBtn_clicked()
 {
     const QString documentLocation = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
-    QString dirName = QFileDialog::getExistingDirectory(this, tr("select excel dir"), documentLocation);
+    QString fileName = QFileDialog::getOpenFileName(this, tr("select excel file"), documentLocation, "Files (*.xlsx)");
 
-    if(dirName.isEmpty()){
+    if(fileName.isEmpty()){
         return;
     }
+    else{
+        QFileInfo info(fileName);
+        if ("xlsx" != info.suffix()){
+            onReceiveMsg("File type is not supported");
+            return;
+        }
+    }
 
-    ui->excelDirEdit->setText(dirName);
+    ui->excelDirEdit->setText(fileName);
 }
 
 void MainWindow::on_generateBtn_2_clicked()
@@ -251,9 +260,61 @@ void MainWindow::on_generateBtn_2_clicked()
         return;
     }
 
+    QFileInfo excelinfo(ui->excelDirEdit->text());
+    if (!excelinfo.exists()){
+        onReceiveMsg("excel file is empty");
+        return;
+    }
+    qDebug() << excelinfo.filePath() << excelinfo.absoluteDir().path();
+
+    QStringList filters;
+    filters << QString("*.ts");
+    QDir tsdir(ui->tsDirEdit->text());
+    tsdir.setFilter(QDir::Files | QDir::NoSymLinks);
+    tsdir.setNameFilters(filters);
+
+    if (tsdir.count() <= 0) {
+        onReceiveMsg("ts dir ts file is 0");
+        return;
+    }
+
+    for (QFileInfo info : tsdir.entryInfoList()) {
+        //import ts file
+        m_transList.clear();
+        re = m_pXmlWorker->ImportFromTS(m_transList, info.absoluteFilePath());
+
+        if(re) {
+            onReceiveMsg("import " + info.fileName() + " success");
+        } else {
+            onReceiveMsg("import " + info.fileName() + " failed");
+        }
+
+        //generate excel file
+        m_pExcelWorker->SetTransColumn(ui->transSpinBox->value());
+        QString excelFileName = excelinfo.absoluteDir().path() + "/" + info.baseName() + ".xlsx";
+        re = m_pExcelWorker->ExportToXlsx(m_transList, excelFileName);
+        if(re) {
+            onReceiveMsg("export " + excelFileName + " success");
+            ui->youdaoTipLabel->setVisible(false);
+        } else {
+            onReceiveMsg("export " + excelFileName + " failed");
+        }
+    }
+}
+
+void MainWindow::on_tsUpdateBtn_2_clicked()
+{
+    bool re;
+
+    QFileInfo tsDirinfo(ui->tsDirEdit->text());
+    if (!tsDirinfo.isDir()){
+        onReceiveMsg("ts dir is empty");
+        return;
+    }
+
     QFileInfo excelDirinfo(ui->excelDirEdit->text());
-    if (!excelDirinfo.isDir()){
-        onReceiveMsg("excel dir is empty");
+    if (!excelDirinfo.exists()){
+        onReceiveMsg("excel path is empty");
         return;
     }
 
@@ -268,27 +329,85 @@ void MainWindow::on_generateBtn_2_clicked()
         return;
     }
 
-    for (QFileInfo info : tsdir.entryInfoList())
-    {
+    for (QFileInfo info : tsdir.entryInfoList()) {
+        if (!m_tsColumnMap.contains(info.fileName())) {
+            continue;
+        }
+
         //import ts file
         m_transList.clear();
         re = m_pXmlWorker->ImportFromTS(m_transList, info.absoluteFilePath());
 
-        if(re) {
-            onReceiveMsg("import " + info.fileName() + " success");
-        } else {
-            onReceiveMsg("import " + info.fileName() + " failed");
+        if(!re) {
+            continue;
         }
 
-        //generate excel file
-        m_pExcelWorker->SetTransColumn(ui->transSpinBox->value());
-        QString excelFileName = ui->excelDirEdit->text() + "/" + info.baseName() + ".xlsx";
-        re = m_pExcelWorker->ExportToXlsx(m_transList, excelFileName);
-        if(re) {
-            onReceiveMsg("export " + excelFileName + " success");
-            ui->youdaoTipLabel->setVisible(false);
-        } else {
-            onReceiveMsg("export " + excelFileName + " failed");
+        m_pExcelWorker->SetTransColumn(m_tsColumnMap[info.fileName()]);
+        re = m_pExcelWorker->ImportFromXlsx(m_transList, ui->excelDirEdit->text());
+        if(!re) {
+            continue;
+        }
+
+        re = m_pXmlWorker->ExportToTS(m_transList, info.absoluteFilePath());
+
+        if(!re) {
+            continue;
         }
     }
+
+    onReceiveMsg("all ts file update finish");
+}
+
+void MainWindow::readConfig()
+{
+    QString configPath = QApplication::applicationDirPath();
+#if __DEBUG
+    configPath.append("/../Config");
+#endif
+    QSettings settings(configPath + "/config.ini", QSettings::IniFormat);
+    settings.beginGroup("path");
+    ui->tsPathEdit->setText(settings.value("tsPath").toString());
+    ui->tsDirEdit->setText(settings.value("tsDir").toString());
+
+    ui->excelPathEdit->setText(settings.value("excelPath").toString());
+    ui->excelDirEdit->setText(settings.value("excelPath2").toString());
+    settings.endGroup();
+
+    m_tsColumnMap.clear();
+    int size = settings.beginReadArray("languages");
+    for (int i = 0; i < size; ++i) {
+        settings.setArrayIndex(i);
+        int column = settings.value("column").toInt();
+        QString fileName = settings.value("tsFile").toString();
+        m_tsColumnMap[fileName] = column;
+    }
+    settings.endArray();
+}
+
+void MainWindow::saveConfig()
+{
+    QString configPath = QApplication::applicationDirPath();
+#if __DEBUG
+    configPath.append("/../Config");
+#endif
+    QSettings settings(configPath + "/config.ini", QSettings::IniFormat);
+    settings.beginGroup("path");
+    settings.setValue("tsPath", ui->tsPathEdit->text());
+    settings.setValue("tsDir", ui->tsDirEdit->text());
+    settings.setValue("excelPath", ui->excelPathEdit->text());
+    settings.setValue("excelPath2", ui->excelDirEdit->text());
+    settings.endGroup();
+
+//    m_tsColumnMap.clear();
+//    m_tsColumnMap["i18n_de.ts"] = 3;
+//    m_tsColumnMap["i18n_zh_cn.ts"] = 4;
+//    settings.beginWriteArray("languages");
+//    int index = 0;
+//    for (auto i = m_tsColumnMap.constBegin(); i != m_tsColumnMap.constEnd(); i++) {
+//        settings.setArrayIndex(index);
+//        index++;
+//        settings.setValue("column", i.key());
+//        settings.setValue("tsFile", i.value());
+//    }
+//    settings.endArray();
 }
