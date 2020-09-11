@@ -48,7 +48,7 @@ bool ExcelRW::ImportFromXlsx(QList<TranslateModel> &list, QString strPath)
                 strKey = "";
             }else
             {
-                strKey = m_pDoc->cellAt(i, m_KeyColumn)->value().toString().trimmed();
+                strKey = m_pDoc->cellAt(i, m_KeyColumn)->value().toString();
             }
 
             if(m_pDoc->cellAt(i, m_SourceColumn) == nullptr)
@@ -56,7 +56,7 @@ bool ExcelRW::ImportFromXlsx(QList<TranslateModel> &list, QString strPath)
                 strSource = "";
             }else
             {
-                strSource = m_pDoc->cellAt(i, m_SourceColumn)->value().toString().trimmed();
+                strSource = m_pDoc->cellAt(i, m_SourceColumn)->value().toString();
             }
 
             if(m_pDoc->cellAt(i, m_TransColumn) == nullptr)
@@ -64,7 +64,7 @@ bool ExcelRW::ImportFromXlsx(QList<TranslateModel> &list, QString strPath)
                 strTranslate = "";
             }else
             {
-                strTranslate = m_pDoc->cellAt(i, m_TransColumn)->value().toString().trimmed();
+                strTranslate = m_pDoc->cellAt(i, m_TransColumn)->value().toString();
             }
 
 //            nErrLine = i;
